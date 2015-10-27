@@ -6,11 +6,14 @@ from random import choice
 
 @app.route('/')
 @app.route('/index')
-def index():
-    user = choice([
-        { 'nickname': 'Qazi' },
-        { 'nickname': 'Adil' }
-    ])
+def index(user=''):
+    if not user:
+        user = choice([
+            { 'nickname': 'Qazi' },
+            { 'nickname': 'Adil' }
+        ])
+    else:
+        user = {'nickname': user}
 
     posts = [
         {
@@ -50,8 +53,9 @@ def login():
     if form.validate_on_submit():
         flash('Login requested for OpenID="%s",'
               'remember_me=%s'\
-              %(form.openid.data, str(form.remember_me))
-              )
+              %(form.openid.data, str(form.remember_me.data)))
+        print(form.openid.data)
+        print(str(form.remember_me.data))
         return redirect('/index')
     return render_template('login.html',
                            title='Sign In',
