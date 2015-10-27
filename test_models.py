@@ -11,8 +11,10 @@ class TestModels(TestCase):
         import datetime
         # create user 1
         u = models.User(nickname='john', email='john@email.com')
+        db.session.add(u)
         # create user 2
         u = models.User(nickname='susan', email='susan@email.com')
+        db.session.add(u)
         users = models.User.query.all()
         # Access everything
         self.assertEqual(users.__repr__(), "[<User 'john'>, <User 'susan'>]")
@@ -39,12 +41,21 @@ class TestModels(TestCase):
         susan = models.User.query.get(2)
         self.assertEqual(susan.__repr__(), "<User 'susan'>")
 
-        # Get all posts from a user
+        # Get all posts from Susan
         post = models.Post(body='my first post!', timestamp=datetime.datetime.utcnow(), author=susan)
+        db.session.add(post)
         posts = susan.posts.all()
         self.assertEqual(posts.__repr__(), "[<Post 'my first post!'>]")
 
         # obtain author of each post
         for post in posts:
-            print(post.id, post.author.nickname, post.body)
+            print(post.id, post.author.nickname)
+            self.assertEqual(post.id, 1)
+            self.assertEqual(post.author.nickname, 'susan')
+            self.assertEqual(post.body, "my first post!")
+            pass
 
+        # get all users in reverse alphabetical order
+        nicknames_desc = models.User.query.order_by('nickname desc').all()
+        expected = "[<User 'susan'>, <User 'john'>]"
+        self.assertEqual(nicknames_desc.__repr__(), expected)
