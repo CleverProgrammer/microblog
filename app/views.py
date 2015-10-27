@@ -31,7 +31,10 @@ def index():
     ]
 
     images = {
-        'cat':'http://bit.ly/1Brje4z'
+        'cat':'http://bit.ly/1Brje4z',
+        'ugly-cat': 'http://bit.ly/1O4b1LS',
+        'curtain-cat': 'http://bit.ly/1MfLNDN',
+        'claw-cat': 'http://bit.ly/1E3DquM'
     }
 
     return render_template('index.html',

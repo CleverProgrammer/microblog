@@ -11,7 +11,13 @@
    {% endfor %}
 
    {% for image in images.values() %}
-       <img src={{ image }} alt="" width="300px" height="300px">
+     <div>
+       <img src={{ image }}
+            alt="images"
+            style="max-width: 30%;
+            float: left;
+            height:250px ">
+     </div>
    {% endfor %}
 
 
