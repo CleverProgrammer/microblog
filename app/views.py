@@ -54,8 +54,6 @@ def login():
         flash('Login requested for OpenID="%s",'
               'remember_me=%s'\
               %(form.openid.data, str(form.remember_me.data)))
-        print(form.openid.data)
-        print(str(form.remember_me.data))
         return redirect('/index')
     return render_template('login.html',
                            title='Sign In',
