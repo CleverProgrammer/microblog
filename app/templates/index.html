@@ -10,15 +10,24 @@
     </div>
    {% endfor %}
 
-   {% for image in images.values() %}
+
+   {% if user.nickname == 'Adil' %}
      <div>
-       <img src={{ image }}
-            alt="images"
-            style="max-width: 30%;
-            float: left;
-            height:250px ">
+       <img src="http://bit.ly/1Brje4z" alt="ugly-cat">
      </div>
-   {% endfor %}
+
+   {% else %}
+     {% for title, image in images.items() %}
+       <div>
+         <img src={{ image }}
+              alt={{ title }}
+              style="max-width: 30%;
+              float: left;
+              height:250px ">
+       </div>
+
+     {% endfor %}
+  {% endif %}
 
 
 {% endblock %}

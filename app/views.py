@@ -1,10 +1,11 @@
-from flask import render_template
+from flask import render_template, flash, redirect
 from app import app
+from .forms import LoginForm
 from random import choice
 
 
-@app.route('http://rafeh01.github.io')
-@app.route('/microblog')
+@app.route('/')
+@app.route('/index')
 def index():
     user = choice([
         { 'nickname': 'Qazi' },
@@ -42,4 +43,18 @@ def index():
                            user=user,
                            posts=posts,
                            images=images)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for OpenID="%s",'
+              'remember_me=%s'\
+              %(form.openid.data, str(form.remember_me))
+              )
+        return redirect('/index')
+    return render_template('login.html',
+                           title='Sign In',
+                           form=form)
+
 
