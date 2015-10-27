@@ -2,26 +2,41 @@ from flask import render_template
 from app import app
 from random import choice
 
+
 @app.route('/')
 @app.route('/index')
 def index():
-    user = choice([{'nickname': 'Qazi'}, {'nickname': 'James'}])
+    user = choice([
+        { 'nickname': 'Qazi' },
+        { 'nickname': 'Adil' }
+    ])
+
     posts = [
         {
-            'author': {'swagname': 'Magnus'},
+            'author': {'nickname': 'Magnus'},
             'body': 'A beautiful chess game!'
         },
         {
-            'author': {'swagname': 'Carlsen'},
+            'author': {'nickname': 'Carlsen'},
             'body': 'An immortal game that one must see...'
         },
         {
-            'author': {'swagname': 'Qazi'},
+            'author': {'nickname': 'Qazi'},
             'body': 'Chess is pretty cool.'
+        },
+        {
+            'author': {'nickname': 'Joker'},
+            'body': 'Stuff is pretty stuffy. Lorem bitchsum.'
         }
     ]
+
+    images = {
+        'cat':'http://bit.ly/1Brje4z'
+    }
+
     return render_template('index.html',
                            title='Home',
                            user=user,
-                           posts=posts)
+                           posts=posts,
+                           images=images)
 
