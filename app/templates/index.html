@@ -1,17 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    {% if title %}
-    <title>{{ title }} - microblog</title>
-    {% else %}
-    <title>Welcome to microblog</title>
-    {% endif %}
-  </head>
-  <body>
+{% extends "base.html" %}
+{% block content %}
     <h1>Hello, {{ user.nickname }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.swagname }} says: <b>{{ post.body }}</b></p></div>
-    {% endfor %}
-  </body>
-</html>
+
+   {% for post in posts[:-1] %}
+     <div>
+       <p>{{ post.author.nickname }}
+        says: <b>{{ post.body }}</b>
+      </p>
+    </div>
+   {% endfor %}
+
+
+   {% if user.nickname == 'Adil' %}
+     <div>
+       <img src="http://bit.ly/1Brje4z" alt="ugly-cat">
+     </div>
+
+   {% else %}
+     {% for title, image in images.items() %}
+       <div>
+         <img src={{ image }}
+              alt={{ title }}
+              style="max-width: 30%;
+              float: left;
+              height:250px ">
+       </div>
+
+     {% endfor %}
+  {% endif %}
+
+
+{% endblock %}
