@@ -30,7 +30,7 @@ def index(user=''):
         },
         {
             'author': {'nickname': 'Joker'},
-            'body': 'Stuff is pretty stuffy. Lorem bitchsum.'
+            'body': 'Stuff is pretty stuffy. Lorem snitchsum.'
         }
     ]
 
