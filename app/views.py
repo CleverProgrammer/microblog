@@ -3,8 +3,8 @@ from app import app
 from random import choice
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('http://rafeh01.github.io')
+@app.route('/microblog')
 def index():
     user = choice([
         { 'nickname': 'Qazi' },
