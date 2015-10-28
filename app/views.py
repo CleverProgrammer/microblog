@@ -1,8 +1,14 @@
-from flask import render_template, flash, redirect
-from app import app
+from flask import render_template, flash, redirect, session, url_for, request, g
+from flask.ext.login import login_user, logout_user, current_user, login_required
+from app import app, db, lm, oid
 from .forms import LoginForm
+from .models import User
 from random import choice
 
+
+@lm.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 @app.route('/')
 @app.route('/index')
@@ -48,16 +54,25 @@ def index(user=''):
                            images=images)
 
 @app.route('/login', methods=['GET', 'POST'])
+@oid.loginhandler  # tells flask that this is our login view function.
 def login():
+    # flask.g global is used to share and store data during the life of a session by flask.
+    # we will be storing the logged in user in g.
+    if g.user is not None and g.user.is_authenticated:
+        # letting flask build its own links using url_for
+        # I can also simply just remove the url_for.
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        flash('Login requested for OpenID="%s",'
-              'remember_me=%s'\
-              %(form.openid.data, str(form.remember_me.data)))
-        return redirect('/index')
+        # flask.session stores data and keeps it alive for that particular user for all their
+        # future requests.
+        # store remember me boolean value
+        session['remember_me'] = form.remember_me.data
+        return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
     return render_template('login.html',
                            title='Sign In',
                            form=form,
                            providers=app.config['OPENID_PROVIDERS'])
 
+@oid.after_login
 
