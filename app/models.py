@@ -1,4 +1,5 @@
 from app import db
+from hashlib import md5
 
 # Used WWW SQL Designer tool to sketch my idea
 # Link: http://ondras.zarovi.cz/sql/demo/
@@ -30,6 +31,11 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.nickname)
 
+    def avatar(self, size):
+        # mm returns mystery man image if user does not have a gravatar account
+        # the s=N option requests the avatar scaled to the given size in pixels
+        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.email.encode('utf-8')).hexdigest(), size)
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
@@ -38,3 +44,4 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % (self.body)
+
