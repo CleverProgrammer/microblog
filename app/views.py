@@ -74,5 +74,30 @@ def login():
                            form=form,
                            providers=app.config['OPENID_PROVIDERS'])
 
-@oid.after_login
+@app.before_request
+def before_request():
+    g.user = current_user
 
+@oid.after_login
+def after_login(resp):
+    if resp.email is None or resp.email == "":
+        flash('Invalid login. Please try again')
+        return redirect(url_for('login'))
+    # check our database for the user email.
+    user = User.query.filter_by(email=resp.email).first()
+    # if not found in our database, then this is a new user.
+    if user is None:
+        nickname = resp.nickname
+        if nickname is None or nickname == "":
+            nickname = resp.email.split('@')[0]
+        user = User(nickname=nickname, email=resp.email())
+        db.session.add(user)
+        db.session.commit()
+    remember_me = False
+    # session is a dictionary.
+    if 'remember_me' in session:
+        remember_me = session['remember_me']
+        session.pop('remember_me', None)
+    # register this if it is a valid login.
+    login_user(user, remember = remember_me)
+    return redirect(request.args.get('next') or url_for('index'))
