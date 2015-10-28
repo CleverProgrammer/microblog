@@ -12,7 +12,9 @@ def load_user(id):
 
 @app.route('/')
 @app.route('/index')
-def index(user=''):
+@login_required
+def index():
+    user = g.user
     if not user:
         user = choice([
             { 'nickname': 'Qazi' },
@@ -90,7 +92,7 @@ def after_login(resp):
         nickname = resp.nickname
         if nickname is None or nickname == "":
             nickname = resp.email.split('@')[0]
-        user = User(nickname=nickname, email=resp.email())
+        user = User(nickname=nickname, email=resp.email)
         db.session.add(user)
         db.session.commit()
     remember_me = False
