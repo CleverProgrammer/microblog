@@ -17,28 +17,28 @@ class TestModels(TestCase):
         db.session.add(u)
         users = models.User.query.all()
         # Access everything
-        self.assertEqual(users.__repr__(), "[<User 'john'>, <User 'susan'>]")
+        self.assertEqual(users.__repr__(), "[<User 'Rafeh'>, <User 'john'>, <User 'susan'>]")
 
         # -------------- CHECK JOHN ---------------------------
         # Access john's id
-        self.assertEqual(users[0].id, 1, "john's id should be 1")
+        self.assertEqual(users[1].id, 2, "john's id should be 1")
         # Access john's nickname
-        self.assertEqual(users[0].nickname, 'john', 'john should be john')
+        self.assertEqual(users[1].nickname, 'john', 'john should be john')
         # Access john's email
-        self.assertEqual(users[0].email, 'john@email.com', 'john should be john')
+        self.assertEqual(users[1].email, 'john@email.com', 'john should be john')
 
         # -------------- CHECK SUSAN ---------------------------
         # Access susan's id
-        self.assertEqual(users[1].id, 2, "susan's id should be 1")
+        self.assertEqual(users[2].id, 3, "susan's id should be 1")
         # Access susan's nickname
-        self.assertEqual(users[1].nickname, 'susan', 'susan should be susan')
+        self.assertEqual(users[2].nickname, 'susan', 'susan should be susan')
         # Access susan's email
-        self.assertEqual(users[1].email, 'susan@email.com', 'susan should be susan')
+        self.assertEqual(users[2].email, 'susan@email.com', 'susan should be susan')
 
         # Get users with id
-        u = models.User.query.get(1)
+        u = models.User.query.get(2)
         self.assertEqual(u.__repr__(), "<User 'john'>")
-        susan = models.User.query.get(2)
+        susan = models.User.query.get(3)
         self.assertEqual(susan.__repr__(), "<User 'susan'>")
 
         # Get all posts from Susan
@@ -57,5 +57,5 @@ class TestModels(TestCase):
 
         # get all users in reverse alphabetical order
         nicknames_desc = models.User.query.order_by('nickname desc').all()
-        expected = "[<User 'susan'>, <User 'john'>]"
+        expected = "[<User 'susan'>, <User 'john'>, <User 'Rafeh'>]"
         self.assertEqual(nicknames_desc.__repr__(), expected)
