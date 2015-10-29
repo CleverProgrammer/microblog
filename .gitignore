@@ -108,3 +108,6 @@ target/
 
 # yahoo
 tmp/
+
+# personal vim practice area
+playground_vim
