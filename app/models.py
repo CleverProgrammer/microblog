@@ -4,6 +4,9 @@ from hashlib import md5
 # Used WWW SQL Designer tool to sketch my idea
 # Link: http://ondras.zarovi.cz/sql/demo/
 # Click load and enter: rafeh01
+
+
+# noinspection PyUnresolvedReferences
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nickname = db.Column(db.String(64), index=True, unique=True)
@@ -11,6 +14,10 @@ class User(db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime)
+    followers = db.Table('followers',
+                         db.Column('follower_id', db.Integer, db.ForeignKey('user_id')),
+                         db.Column('followed_id', db.Integer, db.ForeignKey('user_id'))
+                         )
 
     @property
     def is_authenticated(self):
@@ -31,13 +38,14 @@ class User(db.Model):
             return str(self.id)  # python 3
 
     def __repr__(self):
-        return '<User %r>' % (self.nickname)
+        return '<User %r>' % self.nickname
 
     def avatar(self, size):
         # mm returns mystery man image if user does not have a gravatar account
         # the s=N option requests the avatar scaled to the given size in pixels
         return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.email.encode('utf-8')).hexdigest(), size)
 
+    # noinspection PyUnboundLocalVariable
     @staticmethod
     def make_unique_nickname(nickname):
         if User.query.filter_by(nickname=nickname).first() is None:
