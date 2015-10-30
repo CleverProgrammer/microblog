@@ -7,11 +7,13 @@ from random import choice
 from datetime import datetime
 
 
+# noinspection PyShadowingBuiltins
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
 
+# noinspection PyShadowingNames
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -89,6 +91,7 @@ def before_request():
         db.session.commit()
 
 
+# noinspection PyShadowingNames
 @oid.after_login
 def after_login(resp):
     if resp.email is None or resp.email == "":
@@ -111,7 +114,7 @@ def after_login(resp):
         remember_me = session['remember_me']
         session.pop('remember_me', None)
     # register this if it is a valid login.
-    login_user(user, remember = remember_me)
+    login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or url_for('index'))
 
 
@@ -121,6 +124,7 @@ def logout():
     return redirect(url_for('index'))
 
 
+# noinspection PyShadowingNames
 @app.route('/user/<nickname>')  # <nickname> is an argument.
 @login_required
 def user(nickname):
