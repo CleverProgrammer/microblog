@@ -7,10 +7,13 @@ from random import choice
 from datetime import datetime
 
 
+# noinspection PyShadowingBuiltins
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
+
+# noinspection PyShadowingNames
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -18,8 +21,8 @@ def index():
     user = g.user
     if not user:
         user = choice([
-            { 'nickname': 'Qazi' },
-            { 'nickname': 'Adil' }
+            {'nickname': 'Qazi'},
+            {'nickname': 'Adil'}
         ])
     else:
         user = {'nickname': user}
@@ -44,7 +47,7 @@ def index():
     ]
 
     images = {
-        'cat':'http://bit.ly/1Brje4z',
+        'cat': 'http://bit.ly/1Brje4z',
         'ugly-cat': 'http://bit.ly/1O4b1LS',
         'curtain-cat': 'http://bit.ly/1MfLNDN',
         'claw-cat': 'http://bit.ly/1E3DquM'
@@ -55,6 +58,7 @@ def index():
                            user=user,
                            posts=posts,
                            images=images)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 @oid.loginhandler  # tells flask that this is our login view function.
@@ -77,6 +81,7 @@ def login():
                            form=form,
                            providers=app.config['OPENID_PROVIDERS'])
 
+
 @app.before_request
 def before_request():
     g.user = current_user
@@ -85,6 +90,8 @@ def before_request():
         db.session.add(g.user)
         db.session.commit()
 
+
+# noinspection PyShadowingNames
 @oid.after_login
 def after_login(resp):
     if resp.email is None or resp.email == "":
@@ -107,14 +114,17 @@ def after_login(resp):
         remember_me = session['remember_me']
         session.pop('remember_me', None)
     # register this if it is a valid login.
-    login_user(user, remember = remember_me)
+    login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or url_for('index'))
+
 
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
+# noinspection PyShadowingNames
 @app.route('/user/<nickname>')  # <nickname> is an argument.
 @login_required
 def user(nickname):
@@ -132,6 +142,7 @@ def user(nickname):
                            user=user,
                            posts=posts)
 
+
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit():
@@ -148,9 +159,11 @@ def edit():
         form.about_me.data = g.user.about_me
     return render_template('edit.html', form=form)
 
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
+
 
 @app.errorhandler(500)
 def internal_error(error):
