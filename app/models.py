@@ -1,5 +1,6 @@
 from app import db
 from hashlib import md5
+from app import app
 
 # Used WWW SQL Designer tool to sketch my idea
 # Link: http://ondras.zarovi.cz/sql/demo/
@@ -7,8 +8,8 @@ from hashlib import md5
 
 
 followers = db.Table('followers',
-                     db.Column('follower_id', db.Integer, db.ForeignKey('user_id')),
-                     db.Column('followed_id', db.Integer, db.ForeignKey('user_id'))
+                     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+                     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
                      )
 
 
@@ -25,37 +26,7 @@ class User(db.Model):
                                primaryjoin=(followers.c.follower_id == id),
                                secondaryjoin=(followers.c.followed_id == id),
                                backref=db.backref('followers', lazy='dynamic'),
-                               lazy='dynamic'
-                               )
-
-    def follow(self, user):
-        """
-        allows you to follow a user.
-        :param user: {id}
-        :return: object or None
-        """
-        # you can only follow someone if you have not followed them yet.
-        if not self.is_following(user):
-            self.followed.append(user)
-            return self
-
-    def unfollow(self, user):
-        """
-        allows you to unfollow a user.
-        :param user: {id}
-        :return: object or None
-        """
-        # you can only unfollow someone if you are already following them.
-        if self.is_following(user):
-            self.followed.remove(user)
-            return self
-
-    def is_following(self, user):
-        # the followed relationship query returns all the (follower, followed) pairs.
-        # we filter this by the followed user. This is possible because the followed
-        # relationship has a mode of dynamic, so instead of being the result of the
-        # query, this is the actual query object, before execution.
-        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+                               lazy='dynamic')
 
     @property
     def is_authenticated(self):
@@ -96,6 +67,35 @@ class User(db.Model):
                 break
             version += 1
         return new_nickname
+
+    def follow(self, user):
+        """
+        allows you to follow a user.
+        :param user: {id}
+        :return: object or None
+        """
+        # you can only follow someone if you have not followed them yet.
+        if not self.is_following(user):
+            self.followed.append(user)
+            return self
+
+    def unfollow(self, user):
+        """
+        allows you to unfollow a user.
+        :param user: {id}
+        :return: object or None
+        """
+        # you can only unfollow someone if you are already following them.
+        if self.is_following(user):
+            self.followed.remove(user)
+            return self
+
+    def is_following(self, user):
+        # the followed relationship query returns all the (follower, followed) pairs.
+        # we filter this by the followed user. This is possible because the followed
+        # relationship has a mode of dynamic, so instead of being the result of the
+        # query, this is the actual query object, before execution.
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
 
 
 class Post(db.Model):
